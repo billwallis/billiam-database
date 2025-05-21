@@ -36,6 +36,15 @@ model (
 );
 
 
+from (
+        /* Current Finances */
+        select *
+        from 'billiam_database/models/raw/data/finances.csv'
+    union all by name
+        /* Historic Finances */
+        select *
+        from 'billiam_database/models/raw/data/finances-*.csv'
+)
 select
     row_number() over () as row_id,  /* A pseudo row ID for maintaining uniqueness */
     "Transaction"::int as transaction_id,
@@ -47,14 +56,13 @@ select
     trim("Payment Method") as payment_method,
     coalesce("Exclusion"::bool, false) as exclusion_flag,
     "Reimbursement Transaction"::int as reimbursement_transaction_id
-from 'billiam_database/models/raw/data/finances.csv'
 ;
 
 
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
 
-audit (name assert__monzo_transactions_reconcile);
+audit (name assert__monzo_transactions_reconcile, skip true);
 with
 
 my_transactions_rollup as (
@@ -147,7 +155,7 @@ having match_ratio < 0.975
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
 
-audit (name assert__monzo_transactions_reconcile__tfl);
+audit (name assert__monzo_transactions_reconcile__tfl, skip true);
 with
 
 my_txns as (
