@@ -3,11 +3,11 @@
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![Docker](https://img.shields.io/badge/Docker-24.0.6-blue.svg)](https://www.docker.com/)
-[![tests](https://github.com/Bilbottom/billiam-database/actions/workflows/tests.yaml/badge.svg)](https://github.com/Bilbottom/billiam-database/actions/workflows/tests.yaml)
-[![GitHub last commit](https://img.shields.io/github/last-commit/Bilbottom/billiam-database)](https://shields.io/badges/git-hub-last-commit)
+[![tests](https://github.com/billwallis/billiam-database/actions/workflows/tests.yaml/badge.svg)](https://github.com/billwallis/billiam-database/actions/workflows/tests.yaml)
+[![GitHub last commit](https://img.shields.io/github/last-commit/billwallis/billiam-database)](https://shields.io/badges/git-hub-last-commit)
 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Bilbottom/billiam-database/main.svg)](https://results.pre-commit.ci/latest/github/Bilbottom/billiam-database/main)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/billwallis/billiam-database/main.svg)](https://results.pre-commit.ci/latest/github/billwallis/billiam-database/main)
 [![DuckDB](https://img.shields.io/badge/DuckDB-1.1.1-teal.svg)](https://duckdb.org/)
 [![Metabase](https://img.shields.io/badge/Metabase-0.47-teal.svg)](https://www.metabase.com/)
 
@@ -26,11 +26,7 @@ As part of my life admin, I keep track of:
 - Every transaction I make at an item level (since 2018-01-18)
 - On the job, what I'm working on every 15 minutes (since 2019-04-23)
 
-Note that the job tracker is my [daily-tracker](https://github.com/Bilbottom/daily-tracker) project.
-
-Documentation is hosted at:
-
-- https://bilbottom.github.io/billiam-database
+Note that the job tracker is my [daily-tracker](https://github.com/billwallis/daily-tracker) project.
 
 ## Setup
 

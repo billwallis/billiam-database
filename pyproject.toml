@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "billiam-database"
 version = "0.0.0"
 description = "OLAP database project for life admin."
-authors = [{name = "Bilbottom"}]
+authors = [{name = "billwallis"}]
 readme = "README.md"
 keywords = ["sql", "sqlmesh", "duckdb"]
 requires-python = ">=3.11"
