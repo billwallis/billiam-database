@@ -6,7 +6,6 @@
 [![tests](https://github.com/billwallis/billiam-database/actions/workflows/tests.yaml/badge.svg)](https://github.com/billwallis/billiam-database/actions/workflows/tests.yaml)
 [![GitHub last commit](https://img.shields.io/github/last-commit/billwallis/billiam-database)](https://shields.io/badges/git-hub-last-commit)
 
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/billwallis/billiam-database/main.svg)](https://results.pre-commit.ci/latest/github/billwallis/billiam-database/main)
 [![DuckDB](https://img.shields.io/badge/DuckDB-1.1.1-teal.svg)](https://duckdb.org/)
 [![Metabase](https://img.shields.io/badge/Metabase-0.47-teal.svg)](https://www.metabase.com/)
