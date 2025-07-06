@@ -20,18 +20,21 @@ model (
         reimbursement_transaction_id int,
     ),
     audits (
-      not_null(columns=[
-        row_id,
-        transaction_id,
-        transaction_date,
-        item,
-        cost,
-        category,
-        counterparty,
-        payment_method,
-        exclusion_flag,
-      ]),
-      unique_values(columns=[row_id]),
+        not_null(columns=[
+            row_id,
+            transaction_id,
+            transaction_date,
+            item,
+            cost,
+            category,
+            counterparty,
+            payment_method,
+            exclusion_flag,
+        ]),
+        unique_values(columns=[row_id]),
+        assert__monzo_transactions_reconcile,
+        assert__monzo_transactions_reconcile__tfl,
+        assert__amex_transactions_reconcile,
     ),
 );
 
@@ -43,7 +46,7 @@ from (
     union all by name
         /* Historic Finances */
         select *
-        from 'billiam_database/models/raw/data/finances-*.csv'
+        from 'billiam_database/models/raw/data/finances-history-*.csv'
 )
 select
     row_number() over () as row_id,  /* A pseudo row ID for maintaining uniqueness */
@@ -62,7 +65,7 @@ select
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
 
-audit (name assert__monzo_transactions_reconcile, skip true);
+audit (name assert__monzo_transactions_reconcile);
 with
 
 my_transactions_rollup as (
@@ -124,6 +127,7 @@ joined as (
         my_txns.counterparty,
         my_txns.cost,
 
+        monzo_txns.cost as cost__monzo,
         my_txns.running_cost as running_cost__mine,
         monzo_txns.running_cost as running_cost__monzo,
 
@@ -143,19 +147,22 @@ joined as (
     merchant names are not always consistent, so it's harder to join them
     together with integrity.
 
-    We apply a 97.5% match threshold to the running total, so if the running
-    total is out for more than 2.5% of cases we flag this as a failure.
+    If we've had 20 mismatches in a row, then this audit will fail.
 */
-select 1.0 * sum(match_flag::int) / count(*) as match_ratio
-from joined
-having match_ratio < 0.975
+select sum(match_flag::int) as matches
+from (
+    select *
+    from joined
+    qualify row_id >= -20 + max(row_id) over ()
+)
+having matches = 0
 ;
 
 
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
 
-audit (name assert__monzo_transactions_reconcile__tfl, skip true);
+audit (name assert__monzo_transactions_reconcile__tfl);
 with
 
 my_txns as (
@@ -200,6 +207,7 @@ joined as (
         window t_date as (order by transaction_date)
     )
     select
+        row_number() over (order by transaction_date) as row_id,
         transaction_date,
         cost__mine,
         cost__monzo,
@@ -222,7 +230,125 @@ joined as (
     whereas Monzo (`raw.monzo_transactions`) records each _transaction_
     which can correspond to several journeys.
 */
-select 1.0 * sum(match_flag::int) / count(*) as match_ratio
-from joined
-having match_ratio < 0.975
+select sum(match_flag::int) as matches
+from (
+    select *
+    from joined
+    qualify row_id >= -20 + max(row_id) over ()
+)
+having matches = 0
+;
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+audit (name assert__amex_transactions_reconcile);
+with
+
+my_transactions_rollup as (
+    select
+        transaction_id,
+        any_value(transaction_date) as transaction_date,
+        any_value(counterparty) as counterparty,
+        sum(cost)::decimal(18, 2) as cost,
+    from raw.finances
+    where 1=1
+        and payment_method = 'Amex'
+        and counterparty not in ('Monzo', 'TfL')
+        and not exists(
+            /* Remove cancelled Uber requests */
+            select *
+            from raw.finances as i
+            where 1=1
+                and finances.counterparty = 'Uber'
+                and i.counterparty = 'Uber'
+                and finances.transaction_date = i.transaction_date
+                and finances.cost = -i.cost
+        )
+        and transaction_date <= (
+            select max(transaction_date)
+            from raw.amex_transactions
+        )
+    group by transaction_id
+),
+
+my_txns as (
+    select
+        row_number() over (order by transaction_id) as row_id,
+
+        transaction_id,
+        transaction_date,
+        counterparty,
+        cost,
+
+        (sum(cost) over (order by transaction_id))::decimal(18, 2) as running_cost,
+    from (
+        /* Some temporary fixes while I sort out my receipts */
+        select
+            * replace (
+                case transaction_id
+                    when 5334 then 25.43  /* WTF is this? */
+                    when 5644 then 35.91  /* Check Deliveroo receipt */
+                    when 5687 then 50.57  /* Check Deliveroo receipt */
+                              else cost
+                end as cost
+            )
+        from my_transactions_rollup
+    )
+),
+amex_txns as (
+    select
+        row_number() over (order by transaction_date, transaction_id) as row_id,
+
+        transaction_id,
+        transaction_date,
+        cost::decimal(18, 2) as cost,
+
+        (sum(cost) over (order by transaction_date, transaction_id))::decimal(18, 2) as running_cost,
+    from raw.amex_transactions
+    where 1=1
+        and description not in (
+            'PAYMENT RECEIVED - THANK YOU',
+            'TFL TRAVEL CHARGE       TFL.GOV.UK/CP'
+        )
+        and transaction_date <= (
+            select max(transaction_date)
+            from raw.finances
+        )
+),
+
+joined as (
+    select
+        row_id,
+
+        my_txns.transaction_date as t_dt,
+        my_txns.transaction_id as t_id,
+        my_txns.counterparty,
+        my_txns.cost,
+
+        amex_txns.cost as cost__amex,
+        my_txns.running_cost as running_cost__mine,
+        amex_txns.running_cost as running_cost__amex,
+
+        my_txns.running_cost = amex_txns.running_cost as match_flag,
+        my_txns.running_cost - amex_txns.running_cost as diff,
+    from my_txns
+        full join amex_txns using (row_id)
+    order by row_id
+)
+
+/* Uncomment for investigating */
+-- from joined order by row_id desc;
+
+/*
+    Similar to the above, we just match "close enough".
+*/
+select sum(match_flag::int) as matches
+from (
+    select *
+    from joined
+    qualify row_id >= -20 + max(row_id) over ()
+)
+having matches = 0
 ;

@@ -31,7 +31,7 @@ select
     trim("Postcode") as postcode,
     trim("Country") as country,
     trim("Category") as category,
-from 'billiam_database/models/raw/data/activity-*.csv'
+from 'billiam_database/models/raw/data/amex_transactions.csv'
 ;
 
 /*
