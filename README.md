@@ -46,8 +46,7 @@ The required versions are specified in the badges at the top of this README.
 After cloning the repo, install the dependencies and enable [pre-commit](https://pre-commit.com/):
 
 ```shell
-uv sync --all-groups
-pre-commit install --install-hooks
+uvx --with poethepoet poe install
 ```
 
 Pipeline changes need to be applied via a plan:
@@ -60,12 +59,6 @@ sqlmesh -p billiam_database plan
 
 ```
 sqlmesh -p billiam_database run
-```
-
-The SQLMesh UI is great for doing these with a GUI:
-
-```
-sqlmesh -p billiam_database ui
 ```
 
 ### Installation (Metabase)
