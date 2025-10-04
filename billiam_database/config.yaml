@@ -19,7 +19,7 @@ gateways:
         billiam: "billiam_database/billiam.duckdb"
         ods:
           type: motherduck
-          path: "md:ods"
+          path: "md:ods?motherduck_token={{ env_var('MOTHERDUCK_TOKEN') }}"
   motherduck:
     connection:
       type: motherduck
