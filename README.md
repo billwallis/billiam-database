@@ -1,4 +1,4 @@
-<div align="center">
+<span align="center">
 
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![Docker](https://img.shields.io/badge/Docker-28.4-blue.svg)](https://www.docker.com/)
@@ -7,10 +7,10 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/billwallis/billiam-database)](https://shields.io/badges/git-hub-last-commit)
 
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/billwallis/billiam-database/main.svg)](https://results.pre-commit.ci/latest/github/billwallis/billiam-database/main)
-[![DuckDB](https://img.shields.io/badge/DuckDB-1.4-teal.svg)](https://duckdb.org/)
+[![DuckDB](https://img.shields.io/badge/DuckDB-1.3-teal.svg)](https://duckdb.org/)
 [![Metabase](https://img.shields.io/badge/Metabase-0.47-teal.svg)](https://www.metabase.com/)
 
-</div>
+</span>
 
 ---
 

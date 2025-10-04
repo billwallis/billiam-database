@@ -2,7 +2,8 @@
 ---
 ci:
   autoupdate_schedule: quarterly
-  skip: ["identity", "uv-lock", "sqlmesh-test"]
+  skip: ["identity", "uv-lock"]
+#  skip: ["identity", "uv-lock", "sqlmesh-test"]
 
 default_install_hook_types: ["pre-commit", "pre-push"]
 default_stages: ["pre-commit"]
@@ -55,12 +56,13 @@ repos:
       - id: tidy-gitkeep
         name: Remove redundant .gitkeep files
 
-  - repo: local
-    hooks:
-      - id: sqlmesh-test
-        name: Run unit tests
-        entry: sqlmesh -p billiam_database test
-        stages: ["pre-push"]
-        language: system
-        pass_filenames: false
-        always_run: true
+  # This is trying to talk with MotherDuck and is generating a browser popup
+#  - repo: local
+#    hooks:
+#      - id: sqlmesh-test
+#        name: Run unit tests
+#        entry: sqlmesh -p billiam_database test
+#        stages: ["pre-push"]
+#        language: system
+#        pass_filenames: false
+#        always_run: true

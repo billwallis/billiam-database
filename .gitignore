@@ -1,9 +1,8 @@
 ###  SQLMesh artifacts
 logs/
 
-### Raw data and sensitive seeds
+### Raw data
 billiam_database/models/raw/data/
-billiam_database/models/seeds/data/counterparty_exclusions.csv
 
 ###  Data objects
 *.db
@@ -143,6 +142,7 @@ celerybeat.pid
 
 ###  Environments
 .env
+.envrc
 .venv
 env/
 venv/

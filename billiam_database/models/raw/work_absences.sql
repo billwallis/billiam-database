@@ -1,8 +1,6 @@
 model (
-    name seeds.work_absences,
-    kind seed (
-      path 'data/work_absences.csv',
-    ),
+    name raw.work_absences,
+    kind full,
     grain (absence_date),
     tags (daily-tracker),
     columns (
@@ -11,3 +9,7 @@ model (
       hours decimal(4, 2),
     ),
 );
+
+select *
+from ods.daily_tracker.work_absences
+;

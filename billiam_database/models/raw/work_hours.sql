@@ -1,8 +1,6 @@
 model (
-    name seeds.work_hours,
-    kind seed (
-      path 'data/work_hours.csv',
-    ),
+    name raw.work_hours,
+    kind full,
     grain (company, from_date),
     tags (daily-tracker),
     columns (
@@ -18,3 +16,7 @@ model (
       saturday decimal(4, 2),
     ),
 );
+
+select *
+from ods.daily_tracker.work_hours
+;

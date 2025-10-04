@@ -25,8 +25,5 @@ jobs:
       - name: 🔨 Install dependencies
         run: uv sync --no-default-groups
 
-      - name: 🤡 Create mock database
-        run: uv run python -m testing.setup
-
       - name: ✅ Run unit tests
         run: uv run sqlmesh -p billiam_database test

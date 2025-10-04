@@ -1,24 +1,29 @@
 ---
 project: billiam_database
 
+ignore_patterns: ["__*.sql"]
+default_target_environment: dev
+model_defaults:
+  dialect: duckdb
+  start: 2018-01-01
+
+plan:
+  enable_preview: true
+
 default_gateway: local
 gateways:
   local:
     connection:
       type: duckdb
-      database: billiam_database/billiam.duckdb
-      # catalogs:
-      # dev: billiam_database/billiam-dev.duckdb
-      # prod: billiam_database/billiam.duckdb
-
-model_defaults:
-  dialect: duckdb
-  start: 2018-01-01
-
-ignore_patterns: ["__*.sql"]
-
-plan:
-  enable_preview: true
-#environment_catalog_mapping:
-#  '^prod$': prod
-#  '^dev$': dev
+      catalogs:
+        billiam: "billiam_database/billiam.duckdb"
+        ods:
+          type: motherduck
+          path: "md:ods?motherduck_token={{ env_var('MOTHERDUCK_TOKEN') }}"
+  motherduck:
+    connection:
+      type: motherduck
+      token: "{{ env_var('MOTHERDUCK_TOKEN') }}"
+      catalogs:
+        warehouse: warehouse
+        ods: ods
