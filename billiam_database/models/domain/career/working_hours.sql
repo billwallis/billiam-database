@@ -23,7 +23,7 @@ model (
 with recursive
 
 weeks(week_starting) as (
-        select date_trunc('week', (select min(from_date) from seeds.work_hours))
+        select date_trunc('week', (select min(from_date) from raw.work_hours))
     union all
         select week_starting + interval '1 week'
         from weeks
@@ -43,14 +43,14 @@ weekly_quota as (
             + friday
             + saturday
         ) as weekly_quota
-    from seeds.work_hours
+    from raw.work_hours
 ),
 
 absence_hours as (
     select
         date_trunc('week', absence_date) as week_starting,
         sum(hours) as absence_hours
-    from seeds.work_absences
+    from raw.work_absences
     group by all
 ),
 

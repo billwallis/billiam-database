@@ -6,7 +6,7 @@ model (
     depends_on (
         raw.amex_transactions,
         raw.monzo_transactions,
-        seeds.counterparty_exclusions,
+        raw.counterparty_exclusions,
     ),
     columns (
         row_id int,
@@ -116,7 +116,7 @@ monzo_txns as (
       and cost != 0
       and category not in ('Savings')
       and counterparty not in ('Transport for London')
-      and counterparty not in (from seeds.counterparty_exclusions)
+      and counterparty not in (from raw.counterparty_exclusions)
 ),
 
 joined as (

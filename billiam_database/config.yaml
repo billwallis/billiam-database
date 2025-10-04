@@ -15,9 +15,15 @@ gateways:
   local:
     connection:
       type: duckdb
-      database: billiam_database/billiam.duckdb
+      catalogs:
+        billiam: "billiam_database/billiam.duckdb"
+        ods:
+          type: motherduck
+          path: "md:ods"
   motherduck:
     connection:
       type: motherduck
-      database: warehouse
       token: "{{ env_var('MOTHERDUCK_TOKEN') }}"
+      catalogs:
+        warehouse: warehouse
+        ods: ods
