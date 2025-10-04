@@ -4,6 +4,7 @@ model (
     grain (row_id),
     tags (finances),
     depends_on (
+        raw.amex_transactions,
         raw.monzo_transactions,
         seeds.counterparty_exclusions,
     ),
