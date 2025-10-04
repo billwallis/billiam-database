@@ -1,6 +1,8 @@
+# yaml-language-server: $schema=https://json.schemastore.org/pyproject.json
+
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["uv_build>=0.8.2,<0.9.0"]
+build-backend = "uv_build"
 
 [project]
 name = "billiam-database"
@@ -11,23 +13,66 @@ readme = "README.md"
 keywords = ["sql", "sqlmesh", "duckdb"]
 requires-python = ">=3.11"
 dependencies = [
-    "duckdb>=1.0.0",
-    "python-dotenv[cli]>=1.1.0",
-    "sqlmesh>=0.171.0",
+    "duckdb>=1.4.0",
+    "sqlmesh>=0.224.0",
 ]
 
 [dependency-groups]
 dev = [
-    "coverage-badge>=1.1.0",
-    "db-query-profiler>=0.0.6",
-    "pre-commit>=4.1.0",
-    "sqlmesh[web]",
-]
-test = [
-    "pytest>=8.3.5",
-    "pytest-cov>=6.0.0",
+    "coverage-badge>=1.1.2",
+    "db-query-profiler>=0.0.8",
+    "pre-commit>=4.3.0",
+    "poethepoet>=0.37.0",
 ]
 
 
-[tool.setuptools.packages.find]
-include = ["billiam_database"]
+[tool.uv]
+required-version = ">=0.8,<1.0"
+default-groups = "all"
+#package = false
+
+[tool.uv.build-backend]
+namespace = true
+
+
+[tool.poe]
+verbosity = -1
+
+[tool.poe.tasks]
+install.shell = """
+    uv sync --refresh
+    pre-commit install --install-hooks
+"""
+lint.shell = """
+    echo '=== pre-commit checks ==='
+    SKIP=identity pre-commit run --all-files --hook-stage pre-commit
+    echo '=== pre-push checks ==='
+    pre-commit run --all-files --hook-stage pre-push
+"""
+update.shell = """
+    uv sync --refresh --upgrade
+    pre-commit autoupdate
+    pre-commit install --install-hooks
+    sqlmesh -p billiam_database migrate
+"""
+docker-up = "docker-compose --file docker-compose.yaml --project-name billiam-database up --detach"
+docker-down = "docker-compose --file docker-compose.yaml --project-name billiam-database down --remove-orphans"
+
+# SQLMesh wrappers (`cmd` rather than `shell` for colour output)
+clean = [
+    {cmd = "sqlmesh -p billiam_database clean"},
+    {cmd = "sqlmesh -p billiam_database janitor"},
+]
+debug = [
+    {cmd = "sqlmesh -p billiam_database info"},
+    {cmd = "sqlmesh -p billiam_database check_intervals"},
+]
+
+render = "sqlmesh -p billiam_database render"
+test = "sqlmesh -p billiam_database test -vv"
+
+plan = "sqlmesh -p billiam_database plan"
+run = "sqlmesh -p billiam_database run"
+audit = "sqlmesh -p billiam_database audit"
+
+sqlmesh = "sqlmesh -p billiam_database"
