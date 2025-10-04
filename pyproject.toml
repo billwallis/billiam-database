@@ -48,6 +48,8 @@ lint.shell = """
     SKIP=identity pre-commit run --all-files --hook-stage pre-commit
     echo '=== pre-push checks ==='
     pre-commit run --all-files --hook-stage pre-push
+    echo '=== sqlmesh checks ==='
+    sqlmesh -p billiam_database lint
 """
 update.shell = """
     uv sync --refresh --upgrade

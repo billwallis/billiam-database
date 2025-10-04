@@ -57,13 +57,6 @@ repos:
 
   - repo: local
     hooks:
-      - id: sqlmesh-lint
-        name: Lint SQLMesh models
-        entry: sqlmesh -p billiam_database lint
-        stages: ["pre-commit"]
-        language: system
-        pass_filenames: false
-        always_run: true
       - id: sqlmesh-test
         name: Run unit tests
         entry: sqlmesh -p billiam_database test
