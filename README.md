@@ -46,7 +46,7 @@ The required versions are specified in the badges at the top of this README.
 After cloning the repo, install the dependencies and enable [pre-commit](https://pre-commit.com/):
 
 ```shell
-uvx --with poethepoet poe install
+uvx --from poethepoet poe install
 ```
 
 This will install several packages, including the task runner [Poe the Poet](https://poethepoet.natn.io/index.html). The tasks are defined in the `pyproject.toml` file.
