@@ -1,3 +1,9 @@
+> [!WARNING]
+>
+> Superseded by [billiam-data-stack](https://github.com/billwallis/billiam-data-stack), an end-to-end data platform:
+>
+> - https://github.com/billwallis/billiam-data-stack
+
 <span align="center">
 
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
